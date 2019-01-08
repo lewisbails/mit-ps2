@@ -12,10 +12,10 @@ import java.util.stream.Collectors;
  * 
  * <p>PS2 instructions: you MUST use the provided rep.
  */
-public class ConcreteEdgesGraph implements Graph<String> {
+public class ConcreteEdgesGraph<L> implements Graph<L> {
     
-    private final Set<String> vertices = new HashSet<>();
-    private final List<Edge> edges = new ArrayList<>();
+    private final Set<L> vertices = new HashSet<>();
+    private final List<Edge<L>> edges = new ArrayList<>();
     
     // Abstraction function:
     //   Contains set of vertices in graph (no duplicates) and
@@ -43,14 +43,14 @@ public class ConcreteEdgesGraph implements Graph<String> {
     }
 
     
-    @Override public boolean add(String vertex) {
+    @Override public boolean add(L vertex) {
         return vertices.add(vertex);
     }
     
-    @Override public int set(String source, String target, int weight) {
+    @Override public int set(L source, L target, int weight) {
         assert weight>=0 : "Weight must be positive non-zero integer";
 
-        Iterator<Edge> it = edges.iterator();
+        Iterator<Edge<L>> it = edges.iterator();
         int oldWeight = 0;
         while (it.hasNext()){
             Edge edge = it.next();
@@ -65,28 +65,28 @@ public class ConcreteEdgesGraph implements Graph<String> {
         }
         if (!vertices.contains(source)) vertices.add(source);
         if (!vertices.contains(target)) vertices.add(target);
-        edges.add(new Edge(source,target,weight));
+        edges.add(new Edge<>(source,target,weight));
         return oldWeight;
 
     }
     
-    @Override public boolean remove(String vertex) {
+    @Override public boolean remove(L vertex) {
         edges.removeIf(e->e.getStart().equals(vertex)||e.getEnd().equals(vertex));
         return vertices.remove(vertex);
     }
     
-    @Override public Set<String> vertices() {
+    @Override public Set<L> vertices() {
         return new HashSet<>(vertices);
     }
     
-    @Override public Map<String, Integer> sources(String target) {
-        Map<String,Integer> sources = new HashMap<>();
+    @Override public Map<L, Integer> sources(L target) {
+        Map<L,Integer> sources = new HashMap<>();
         edges.stream().filter(e->e.getEnd().equals(target)).forEach(e->sources.put(e.getStart(),e.getWeight()));
         return sources;
     }
     
-    @Override public Map<String, Integer> targets(String source) {
-        Map<String,Integer> targets = new HashMap<>();
+    @Override public Map<L, Integer> targets(L source) {
+        Map<L,Integer> targets = new HashMap<>();
         edges.stream().filter(e->e.getStart().equals(source)).forEach(e->targets.put(e.getEnd(),e.getWeight()));
         return targets;
     }
@@ -109,11 +109,11 @@ public class ConcreteEdgesGraph implements Graph<String> {
  * <p>PS2 instructions: the specification and implementation of this class is
  * up to you.
  */
-class Edge {
+class Edge<L> {
     
     // TODO fields
-    private String start;
-    private String end;
+    private L start;
+    private L end;
     private int weight;
     
     // Abstraction function:
@@ -124,7 +124,7 @@ class Edge {
     //   private fields without setters
     
     // TODO constructor
-    public Edge(String start, String end, int weight){
+    public Edge(L start, L end, int weight){
         assert weight>0 : "Positive non-zero weight required!";
         this.start = start;
         this.end = end;
@@ -132,11 +132,11 @@ class Edge {
     }
     
     // TODO checkRep
-    public String getStart(){
+    public L getStart(){
         return start;
     }
 
-    public String getEnd() {
+    public L getEnd() {
         return end;
     }
 
@@ -146,6 +146,6 @@ class Edge {
 
     @Override
     public String toString() {
-        return start+"->"+end+": "+weight;
+        return start.toString()+"->"+end.toString()+": "+weight;
     }
 }

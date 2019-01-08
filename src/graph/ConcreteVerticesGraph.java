@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
  * 
  * <p>PS2 instructions: you MUST use the provided rep.
  */
-public class ConcreteVerticesGraph implements Graph<String> {
+public class ConcreteVerticesGraph<L> implements Graph<L> {
     
     private final List<Vertex> vertices = new ArrayList<>();
     
@@ -38,23 +38,23 @@ public class ConcreteVerticesGraph implements Graph<String> {
         return true;
     }
     
-    @Override public boolean add(String vertex){
+    @Override public boolean add(L vertex){
         for (Vertex existingVertex : vertices){
             if (existingVertex.getName().equals(vertex)) return false;
         }
-        return vertices.add(new Vertex(vertex));
+        return vertices.add(new Vertex<>(vertex));
     }
     
-    @Override public int set(String source, String target, int weight) {
+    @Override public int set(L source, L target, int weight) {
         assert weight>=0 : "Must be positive weight";
         assert !source.equals(target) : "Source cannot be target";
 
         Iterator<Vertex> it = vertices.iterator();
         int oldWeight = 0;
         while (it.hasNext()) {
-            Vertex vertex = it.next();
+            Vertex<L> vertex = it.next();
             if (vertex.getName().equals(source)) {
-                for (String v : vertex.getAdjacentTo().keySet()) {
+                for (L v : vertex.getAdjacentTo().keySet()) {
                     if (v.equals(target)) {
                         oldWeight = vertex.getAdjacentTo().get(v);
                         it.remove();
@@ -62,7 +62,7 @@ public class ConcreteVerticesGraph implements Graph<String> {
                     }
                 }
             } else if (vertex.getName().equals(target)) {
-                for (String v : vertex.getAdjacentFrom().keySet()) {
+                for (L v : vertex.getAdjacentFrom().keySet()) {
                     if (v.equals(source)) {
                         oldWeight = vertex.getAdjacentFrom().get(v);
                         it.remove();
@@ -71,17 +71,17 @@ public class ConcreteVerticesGraph implements Graph<String> {
                 }
             }
         }
-        Vertex To;
-        Vertex From;
+        Vertex<L> To;
+        Vertex<L> From;
         if (vertices.stream().filter(v->v.getName().equals(source)).collect(Collectors.toList()).isEmpty()){
-            From = new Vertex(source);
+            From = new Vertex<>(source);
             vertices.add(From);
         }
         else{
             From = vertices.stream().filter(v->v.getName().equals(source)).collect(Collectors.toList()).get(0);
         }
         if (vertices.stream().filter(v->v.getName().equals(target)).collect(Collectors.toList()).isEmpty()){
-            To = new Vertex(target);
+            To = new Vertex<>(target);
             vertices.add(To);
         }
         else{
@@ -93,9 +93,9 @@ public class ConcreteVerticesGraph implements Graph<String> {
         return oldWeight;
     }
     
-    @Override public boolean remove(String vertex) {
+    @Override public boolean remove(L vertex) {
         if (vertices.removeIf(v->v.getName().equals(vertex))){
-            for (Vertex v : vertices){
+            for (Vertex<L> v : vertices){
                 v.removeFrom(vertex);
                 v.removeTo(vertex);
             }
@@ -104,12 +104,12 @@ public class ConcreteVerticesGraph implements Graph<String> {
         return false;
     }
     
-    @Override public Set<String> vertices() {
-        return vertices.stream().map(Vertex::getName).collect(Collectors.toSet());
+    @Override public Set<L> vertices() {
+        return vertices.stream().map(Vertex<L>::getName).collect(Collectors.toSet());
     }
     
-    @Override public Map<String, Integer> sources(String target) {
-        for (Vertex v : vertices){
+    @Override public Map<L, Integer> sources(L target) {
+        for (Vertex<L> v : vertices){
             if (v.getName().equals(target)){
                 return v.getAdjacentFrom();
             }
@@ -117,8 +117,8 @@ public class ConcreteVerticesGraph implements Graph<String> {
         return new HashMap<>();
     }
     
-    @Override public Map<String, Integer> targets(String source) {
-        for (Vertex v : vertices){
+    @Override public Map<L, Integer> targets(L source) {
+        for (Vertex<L> v : vertices){
             if (v.getName().equals(source)){
                 return v.getAdjacentTo();
             }
@@ -142,12 +142,12 @@ public class ConcreteVerticesGraph implements Graph<String> {
  * <p>PS2 instructions: the specification and implementation of this class is
  * up to you.
  */
-class Vertex {
+class Vertex<L> {
     
     // TODO fields
-    private String name;
-    private Map<String,Integer> adjacentTo;
-    private Map<String,Integer> adjacentFrom;
+    private L name;
+    private Map<L,Integer> adjacentTo;
+    private Map<L,Integer> adjacentFrom;
     
     // Abstraction function:
     //   Contains vertex string and all adjacent vertices
@@ -157,7 +157,7 @@ class Vertex {
     //   Private fields, defensive copying
     
     // TODO constructor
-    public Vertex(String name){
+    public Vertex(L name){
         this.name = name;
         this.adjacentFrom = new HashMap<>();
         this.adjacentTo = new HashMap<>();
@@ -167,7 +167,7 @@ class Vertex {
         return !adjacentFrom.containsKey(name) && !adjacentTo.containsKey(name);
     }
     // TODO methods
-    public boolean addTo(String v, int weight){
+    public boolean addTo(L v, int weight){
         if (adjacentTo.containsKey(v)){
             adjacentTo.put(v,weight);
             return true;
@@ -176,7 +176,7 @@ class Vertex {
         return false;
     }
 
-    public boolean addFrom(String v, int weight){
+    public boolean addFrom(L v, int weight){
         if (adjacentFrom.containsKey(v)){
             adjacentFrom.put(v,weight);
             return true;
@@ -185,19 +185,19 @@ class Vertex {
         return false;
     }
 
-    public String getName(){
+    public L getName(){
         return name;
     }
 
-    public Map<String, Integer> getAdjacentFrom() {
+    public Map<L, Integer> getAdjacentFrom() {
         return new HashMap<>(adjacentFrom);
     }
 
-    public Map<String, Integer> getAdjacentTo() {
+    public Map<L, Integer> getAdjacentTo() {
         return new HashMap<>(adjacentTo);
     }
 
-    public boolean removeTo(String vertex){
+    public boolean removeTo(L vertex){
         if (adjacentTo.containsKey(vertex)){
             adjacentTo.remove(vertex);
             return true;
@@ -205,7 +205,7 @@ class Vertex {
         return false;
     }
 
-    public boolean removeFrom(String vertex){
+    public boolean removeFrom(L vertex){
         if (adjacentFrom.containsKey(vertex)){
             adjacentFrom.remove(vertex);
             return true;

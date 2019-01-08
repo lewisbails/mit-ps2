@@ -3,11 +3,9 @@
  */
 package graph;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 /**
  * An implementation of Graph.
@@ -20,42 +18,87 @@ public class ConcreteEdgesGraph implements Graph<String> {
     private final List<Edge> edges = new ArrayList<>();
     
     // Abstraction function:
-    //   TODO
+    //   Contains set of vertices in graph (no duplicates) and
+    //   list of edges without duplicates
     // Representation invariant:
-    //   TODO
+    //   No duplicate vertices or edges
     // Safety from rep exposure:
-    //   TODO
+    //   Mutator methods check for equality with existing vertices and edges
     
-    // TODO constructor
+    // TODO
+    public ConcreteEdgesGraph(){}
     
     // TODO checkRep
+    public boolean checkRep(){
+        for (int i=0;i<edges.size();i++){
+            for (int j=0;j<edges.size();j++){
+                if (i!=j &&
+                    edges.get(i).getStart().equals(edges.get(j).getStart()) &&
+                    edges.get(i).getEnd().equals(edges.get(j).getEnd())){
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
     
     @Override public boolean add(String vertex) {
-        throw new RuntimeException("not implemented");
+        return vertices.add(vertex);
     }
     
     @Override public int set(String source, String target, int weight) {
-        throw new RuntimeException("not implemented");
+        assert weight>=0 : "Weight must be positive non-zero integer";
+
+        Iterator<Edge> it = edges.iterator();
+        int oldWeight = 0;
+        while (it.hasNext()){
+            Edge edge = it.next();
+            if (edge.getStart().equals(source) && edge.getEnd().equals(target)){
+                oldWeight = edge.getWeight();
+                it.remove();
+                break;
+            }
+        }
+        if (weight==0){
+            return oldWeight;
+        }
+        if (!vertices.contains(source)) vertices.add(source);
+        if (!vertices.contains(target)) vertices.add(target);
+        edges.add(new Edge(source,target,weight));
+        return oldWeight;
+
     }
     
     @Override public boolean remove(String vertex) {
-        throw new RuntimeException("not implemented");
+        edges.removeIf(e->e.getStart().equals(vertex)||e.getEnd().equals(vertex));
+        return vertices.remove(vertex);
     }
     
     @Override public Set<String> vertices() {
-        throw new RuntimeException("not implemented");
+        return new HashSet<>(vertices);
     }
     
     @Override public Map<String, Integer> sources(String target) {
-        throw new RuntimeException("not implemented");
+        Map<String,Integer> sources = new HashMap<>();
+        edges.stream().filter(e->e.getEnd().equals(target)).forEach(e->sources.put(e.getStart(),e.getWeight()));
+        return sources;
     }
     
     @Override public Map<String, Integer> targets(String source) {
-        throw new RuntimeException("not implemented");
+        Map<String,Integer> targets = new HashMap<>();
+        edges.stream().filter(e->e.getStart().equals(source)).forEach(e->targets.put(e.getEnd(),e.getWeight()));
+        return targets;
     }
-    
-    // TODO toString()
-    
+
+    @Override
+    public String toString() {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("Vertices:\n");
+        vertices.forEach(v->stringBuilder.append(v+"\n"));
+        edges.forEach(e->stringBuilder.append(e+"\n"));
+        return stringBuilder.toString();
+    }
 }
 
 /**
@@ -69,20 +112,40 @@ public class ConcreteEdgesGraph implements Graph<String> {
 class Edge {
     
     // TODO fields
+    private String start;
+    private String end;
+    private int weight;
     
     // Abstraction function:
-    //   TODO
+    //   Represents edge in graph with beginning vertex, end vertex and weight
     // Representation invariant:
-    //   TODO
+    //   start and end vertices
     // Safety from rep exposure:
-    //   TODO
+    //   private fields without setters
     
     // TODO constructor
+    public Edge(String start, String end, int weight){
+        assert weight>0 : "Positive non-zero weight required!";
+        this.start = start;
+        this.end = end;
+        this.weight = weight;
+    }
     
     // TODO checkRep
-    
-    // TODO methods
-    
-    // TODO toString()
-    
+    public String getStart(){
+        return start;
+    }
+
+    public String getEnd() {
+        return end;
+    }
+
+    public int getWeight() {
+        return weight;
+    }
+
+    @Override
+    public String toString() {
+        return start+"->"+end+": "+weight;
+    }
 }

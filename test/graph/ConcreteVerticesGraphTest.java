@@ -27,19 +27,64 @@ public class ConcreteVerticesGraphTest extends GraphInstanceTest {
     /*
      * Testing ConcreteVerticesGraph...
      */
-    
-    // Testing strategy for ConcreteVerticesGraph.toString()
-    //   TODO
-    
-    // TODO tests for ConcreteVerticesGraph.toString()
-    
+
+    @Test(expected=AssertionError.class)
+    public void testAssertionsEnabled() {
+        assert false; // make sure assertions are enabled with VM argument: -ea
+    }
+
+    @Test
+    public void testInitialVerticesEmpty() {
+        super.testInitialVerticesEmpty();
+    }
+
+    @Test
+    public void testAdd(){
+        super.testAdd();
+    }
+
+    @Test
+    public void testSet(){
+        super.testSet();
+    }
+
+    @Test
+    public void testRemove(){
+        super.testRemove();
+    }
+
+    @Test
+    public void testVertices(){
+        super.testVertices();
+    }
+
+    @Test
+    public void testSources(){
+        super.testSources();
+    }
+
+    @Test
+    public void testTargets(){
+        super.testTargets();
+    }
+
+    // Testing strategy for ConcreteEdgesGraph.toString()
+    @Test
+    public void testToString(){
+    }
+
     /*
-     * Testing Vertex...
+     * Testing Edge...
      */
-    
-    // Testing strategy for Vertex
+
+    // Testing strategy for Edge
     //   TODO
-    
-    // TODO tests for operations of Vertex
-    
+
+    // TODO tests for operations of Edge
+
+    @Test
+    public void testEdge(){
+
+    }
+
 }

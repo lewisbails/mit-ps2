@@ -7,6 +7,8 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
+import java.util.Collections;
+
 /**
  * Tests for ConcreteEdgesGraph.
  * 
@@ -27,11 +29,51 @@ public class ConcreteEdgesGraphTest extends GraphInstanceTest {
     /*
      * Testing ConcreteEdgesGraph...
      */
+
+    @Test(expected=AssertionError.class)
+    public void testAssertionsEnabled() {
+        assert false; // make sure assertions are enabled with VM argument: -ea
+    }
+
+    @Test
+    public void testInitialVerticesEmpty() {
+        super.testInitialVerticesEmpty();
+    }
+
+    @Test
+    public void testAdd(){
+        super.testAdd();
+    }
+
+    @Test
+    public void testSet(){
+        super.testSet();
+    }
+
+    @Test
+    public void testRemove(){
+        super.testRemove();
+    }
+
+    @Test
+    public void testVertices(){
+        super.testVertices();
+    }
+
+    @Test
+    public void testSources(){
+        super.testSources();
+    }
+
+    @Test
+    public void testTargets(){
+        super.testTargets();
+    }
     
     // Testing strategy for ConcreteEdgesGraph.toString()
-    //   TODO
-    
-    // TODO tests for ConcreteEdgesGraph.toString()
+    @Test
+    public void testToString(){
+    }
     
     /*
      * Testing Edge...
@@ -41,5 +83,10 @@ public class ConcreteEdgesGraphTest extends GraphInstanceTest {
     //   TODO
     
     // TODO tests for operations of Edge
+
+    @Test
+    public void testEdge(){
+
+    }
     
 }

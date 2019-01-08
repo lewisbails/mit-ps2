@@ -117,14 +117,15 @@ public abstract class GraphInstanceTest {
         newGraph.add("vertex 1");
         newGraph.add("vertex 2");
         newGraph.set("vertex 1", "vertex 2",10);
-        assertEquals(10,(int) newGraph.targets("vertex 1").get("vertex 1"));
+        assertEquals(10,(int) newGraph.targets("vertex 1").get("vertex 2"));
         // test directedness
         assertTrue(newGraph.targets("vertex 2").isEmpty());
         // test non existent vertices
         assertTrue(newGraph.targets("vertex 3").isEmpty());
         // test multiple sources
-        newGraph.set("vertex 3","vertex 2", 5);
-        assertTrue(newGraph.sources("vertex 2").size()==2);
+        newGraph.add("vertex 3");
+        newGraph.set("vertex 1","vertex 3", 5);
+        assertTrue(newGraph.targets("vertex 1").size()==2);
 
     }
     
